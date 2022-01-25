@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Ace brython</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+<style type="text/css" media="screen">
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap');
+    body {
+      background-color: rgb(55, 53, 58);
+      font-family: 'Roboto', sans-serif;
+    }
+
+    p {
+        color: deeppink;
+    }
+    h3 {
+        color: rgb(255, 255, 141);
+    }
+    .divcolor {
+        background-color: rgb(71, 63, 85);
+        padding: 5%;
+        border-radius: 5px;
+        color: aquamarine;
+    }
+    #editor {
+        position: absolute;
+        top: 5%;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        width: 50%;
+    }
+    #output {
+        position: absolute;
+        left: 50%;
+        padding: 1%;
+        margin: 10%;
+        width: 20%;
+        height: 20%;
+    }
+</style>
+<script type="text/javascript" src="brython.js"></script>
+<script type="text/javascript" src="brython_stdlib.js"></script>
+</head>
+<body onload="brython()">
+<h3>Task: Display π <button id="run_code" class="btn btn-info" onclick="getCode()">Run</button></h3>
+<br>
+<div id="editor" class="input_code">
+
+</div>
+<span id="output" class="divcolor">
+    <b><p>Output</p></b>
+    <br>
+</span>
+<script src="https://pagecdn.io/lib/ace/1.4.13/ace.js" crossorigin="anonymous" integrity="sha256-bS3VAQePcKYmsvI+8BdG2QJAVb9FbiZLgM5vK2/+TcM=" ></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.setTheme("ace/theme/monokai");
+    editor.session.setMode("ace/mode/python");
+    function getCode() {
+        window.code = editor.getValue();
+        console.log(code);
+    }
+</script>
+<script type="text/python">
+    from browser import document, window, html
+    import sys
+    import io
+    import math
+
+    old_stdout = sys.stdout
+    new_stdout = io.StringIO()
+    sys.stdout = new_stdout
+
+    output_elem = document["output"]
+
+    def check(x):
+        x = float(x)
+        if x == math.pi:
+            output_elem <= html.B("\nCorrect!")
+        if x != math.pi:
+            output_elem <= html.B("\nWrong!")
+
+    def click(ev):
+        exec(window.code)
+        output = new_stdout.getvalue()
+        output_elem <= html.B(f"{output}")
+        check(output)
+        sys.stdout = old_stdout
+    
+    document["run_code"].bind("click", click)
+</script>
+</body>
+</html>
